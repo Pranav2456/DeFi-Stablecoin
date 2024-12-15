@@ -101,6 +101,8 @@ contract DSCEngine is ReentrancyGuard {
             s_collateralTokens.push(tokenAddresses[i]);
         }
         i_dsc = DecentralizedStableCoin(dscAddress);
+
+        DecentralizedStableCoin(dscAddress).transferOwnershipToDscEngine(address(this));
     }
 
     // External Functions
