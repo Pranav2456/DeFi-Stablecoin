@@ -21,7 +21,7 @@
 // private
 // view & pure functions
 
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.19;
 
 import {ERC20Burnable, ERC20} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -42,7 +42,7 @@ contract DecentralizedStableCoin is ERC20Burnable, Ownable {
     error ERC20Burnable_BurnAmountExceedsBalance();
     error DecentralizedStableCoin_NotAddressZero();
 
-    constructor() ERC20("DecentralizedStableCoin", "DSC") Ownable(msg.sender) {}
+    constructor() ERC20("DecentralizedStableCoin", "DSC") Ownable(address(msg.sender)) {}
 
     function burn(uint256 _amount) public override onlyOwner {
         uint256 balance = balanceOf(msg.sender);
@@ -65,9 +65,5 @@ contract DecentralizedStableCoin is ERC20Burnable, Ownable {
         }
         _mint(_to, _amount);
         return true;
-    }
-
-    function transferOwnershipToDscEngine(address _dscEngine) external onlyOwner {
-        transferOwnership(_dscEngine);
     }
 }

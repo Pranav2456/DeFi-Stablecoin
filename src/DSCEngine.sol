@@ -21,7 +21,7 @@
 // private
 // view & pure functions
 
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.19;
 
 import {DecentralizedStableCoin} from "./DecentralizedStableCoin.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
@@ -57,7 +57,7 @@ contract DSCEngine is ReentrancyGuard {
     error DSCEngine__MintFailed();
 
     uint256 private constant ADDITIONAL_FEED_PRECISION = 1e10;
-    uint256 private constant PRECISION = 1e10;
+    uint256 private constant PRECISION = 1e18;
     uint256 private constant LIQUIDATION_THRESHOLD = 50; // 200% OVERCOLLATERIZED
     uint256 private constant LIQUIDATION_PRECISION = 100;
     uint256 private constant MIN_HEALTH_FACTOR = 1;
@@ -101,8 +101,6 @@ contract DSCEngine is ReentrancyGuard {
             s_collateralTokens.push(tokenAddresses[i]);
         }
         i_dsc = DecentralizedStableCoin(dscAddress);
-
-        DecentralizedStableCoin(dscAddress).transferOwnershipToDscEngine(address(this));
     }
 
     // External Functions
@@ -168,7 +166,7 @@ contract DSCEngine is ReentrancyGuard {
         collateralValueInUsd = getAccountCollateralValueInUsd(user);
     }
 
-    function _healthFactor(address user) private view returns (uint256){
+    function _healthFactor(address user) private view returns (uint256) {
         // total DSC Minted
         // total collateral val;ue
         (uint256 totalDscMinted, uint256 collateralValueInUsd) = _getAccountInformation(user);
@@ -177,10 +175,10 @@ contract DSCEngine is ReentrancyGuard {
     }
 
     function _revertIfHealthFactorIsBroken(address user) internal view {
-       uint256 userHealthFactor = _healthFactor(user);
-       if  (userHealthFactor < MIN_HEALTH_FACTOR) {
-           revert DSCEngine__BreaksHealthFactor(userHealthFactor);
-       }
+        uint256 userHealthFactor = _healthFactor(user);
+        if (userHealthFactor < MIN_HEALTH_FACTOR) {
+            revert DSCEngine__BreaksHealthFactor(userHealthFactor);
+        }
     }
 
     // Public and External Functions
